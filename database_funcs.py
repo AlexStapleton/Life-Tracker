@@ -170,9 +170,10 @@ def get_tracker_type(trackerid):
     querey = "SELECT trackertype from master_tracker WHERE id = %s" % (trackerid,)
     cursor.execute(querey
 
-    # Expect back only one value.
     rows = cursor.fetchall()
+
     trackertype = rows[0]
+
     return trackertype
 
 
