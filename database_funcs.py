@@ -137,7 +137,7 @@ def add_tracker_transactions_table(update_dict):
     connection.commit()
 
 
-def list_active_trackers(type='all'):
+def list_active_trackers(tracker_type='all'):
     """Returns a list of the current trackers from the master_tracker table."""
     # Initiate the connection
     con = db_connection()
@@ -145,13 +145,13 @@ def list_active_trackers(type='all'):
     cursor = con[1]
     connection.row_factory = sqlite3.Row
 
-    if type == 'all':
+    if tracker_type == 'all':
         cursor.execute("""
             SELECT id, trackername FROM master_tracker
         """)
     else:
         # Create correctly formatted string for cursor to read
-        query = "SELECT id, trackername FROM master_tracker WHERE trackertype = %s" % (type,)
+        query = "SELECT id, trackername FROM master_tracker WHERE trackertype = %s" % (tracker_type,)
         cursor.execute(query)
 
     trackers_dict = support_funcs.convert_tup_to_dict(cursor.fetchall())
@@ -161,6 +161,7 @@ def list_active_trackers(type='all'):
         current_trackernames.append(value)
 
     return current_trackernames
+
 
 def get_tracker_type(trackerid):
     """Returns the tracker type of a specific tracker."""
@@ -173,7 +174,6 @@ def get_tracker_type(trackerid):
     rows = cursor.fetchall()
     trackertype = rows[0][0]
     return trackertype
-
 
 
 def list_transactions_tracker(trackerid):

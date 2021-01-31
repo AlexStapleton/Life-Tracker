@@ -18,6 +18,7 @@ else:
 
 pprint.pprint(database_funcs.list_active_trackers())
 
+pprint.pprint(database_funcs.list_active_trackers('Num'))
 x = 7
 value = core_funcs.add_transaction(x)
 print(value)
