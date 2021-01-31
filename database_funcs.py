@@ -57,8 +57,10 @@ def create_default_tables():
 
 
 def unique_id_gen(table):
-    """Grabs the largest id in the table (input into function) and adds 1 to get a
-    unique id"""
+    """Grabs the largest id in the table (input into function)
+    and adds 1 to get a unique id.
+    If there is no value in the database, this function returns 1"""
+
     master_tracker_status = False
 
     new_id = 0
@@ -102,7 +104,7 @@ def add_master_tracker_table(update_dict):
     id = unique_id_gen('master_tracker')
 
     cursor.execute("""
-        INSERT INTO master_tracker 
+        INSERT INTO master_tracker
             (id, trackertype, trackername, trackerdesc, dateadded, state)
             VALUES (?, ?, ?, ?, ?, ?)""", (id, type, name, description, date, state))
 
@@ -127,7 +129,7 @@ def add_tracker_transactions_table(update_dict):
     tracker_string_val = update_dict["tracker_string_val"]
 
     cursor.execute("""
-        INSERT INTO tracker_transactions 
+        INSERT INTO tracker_transactions
             (id, trackerid, date, num_val, bool_val, string_val)
             VALUES (?, ?, ?, ?, ?, ?)""", (id, trackerid, date, tracker_num_val, tracker_bool_val, tracker_string_val))
 
@@ -144,11 +146,12 @@ def list_active_trackers(type='all'):
 
     if type == 'all':
         cursor.execute("""
-            SELECT id, trackername FROM master_tracker    
+            SELECT id, trackername FROM master_tracker
         """)
     else:
         # Create correctly formatted string for cursor to read
         query = "SELECT id, trackername FROM master_tracker WHERE trackertype = %s" % (type,)
+        cursor.execute(query)
 
     trackers_dict = support_funcs.convert_tup_to_dict(cursor.fetchall())
 
@@ -158,8 +161,31 @@ def list_active_trackers(type='all'):
 
     return current_trackernames
 
-def list_active_trackers_type(trackertype):
+def get_tracker_type(trackerid):
+    """Returns the tracker type of a specific tracker."""
+    con = db_connection()
+    connection = con[0]
+    cursor = con[1]
+
+    querey = "SELECT trackertype from master_tracker WHERE id = %s" % (trackerid,)
+    cursor.execute(querey
+
+    rows = cursor.fetchall()
+
+    trackertype = rows[0]
+
+    return trackertype
+
+
+
+def list_transactions_tracker(trackerid, trackertype):
+    """Gets all of the transactions for a tracker from the tracker_transactions table"""
+    # Initiate the connection
     con = db_connection()
     connection = con[0]
     cursor = con[1]
     connection.row_factory = sqlite3.Row
+
+    cursor.execute("""
+        SELECT id,
+    """)
