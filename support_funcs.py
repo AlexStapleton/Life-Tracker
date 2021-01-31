@@ -29,3 +29,6 @@ def string_dup_check(str_val, str_list, type='lower'):
         return True
     else:
         return False
+
+
+
