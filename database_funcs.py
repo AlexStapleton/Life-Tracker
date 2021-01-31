@@ -97,16 +97,16 @@ def add_master_tracker_table(update_dict):
     name = update_dict["name"]
     description = update_dict["desc"]
     date = update_dict["dt"]
-    type = update_dict["type"]
+    set_type = update_dict["type"]
     state = 1
 
     # Get a unique id
-    id = unique_id_gen('master_tracker')
+    new_id = unique_id_gen('master_tracker')
 
     cursor.execute("""
         INSERT INTO master_tracker
             (id, trackertype, trackername, trackerdesc, dateadded, state)
-            VALUES (?, ?, ?, ?, ?, ?)""", (id, type, name, description, date, state))
+            VALUES (?, ?, ?, ?, ?, ?)""", (new_id, set_type, name, description, date, state))
 
     connection.commit()
 
@@ -119,7 +119,7 @@ def add_tracker_transactions_table(update_dict):
     cursor = con[1]
 
     # Get a unique id
-    id = unique_id_gen('tracker_transactions')
+    new_id = unique_id_gen('tracker_transactions')
 
     # Parse dictionary values
     date = update_dict["dt"]
@@ -131,7 +131,8 @@ def add_tracker_transactions_table(update_dict):
     cursor.execute("""
         INSERT INTO tracker_transactions
             (id, trackerid, date, num_val, bool_val, string_val)
-            VALUES (?, ?, ?, ?, ?, ?)""", (id, trackerid, date, tracker_num_val, tracker_bool_val, tracker_string_val))
+            VALUES (?, ?, ?, ?, ?, ?)""",
+            (new_id, trackerid, date, tracker_num_val, tracker_bool_val, tracker_string_val))
 
     connection.commit()
 
@@ -168,17 +169,14 @@ def get_tracker_type(trackerid):
     cursor = con[1]
 
     querey = "SELECT trackertype from master_tracker WHERE id = %s" % (trackerid,)
-    cursor.execute(querey
-
+    cursor.execute(querey)
     rows = cursor.fetchall()
-
-    trackertype = rows[0]
-
+    trackertype = rows[0][0]
     return trackertype
 
 
 
-def list_transactions_tracker(trackerid, trackertype):
+def list_transactions_tracker(trackerid):
     """Gets all of the transactions for a tracker from the tracker_transactions table"""
     # Initiate the connection
     con = db_connection()
@@ -186,6 +184,22 @@ def list_transactions_tracker(trackerid, trackertype):
     cursor = con[1]
     connection.row_factory = sqlite3.Row
 
-    cursor.execute("""
-        SELECT id,
-    """)
+    # Get the type of the tracker
+    tracker_type = get_tracker_type(trackerid)
+
+    column_to_grab = ""
+    if tracker_type == "Num":
+        column_to_grab == "num_val"
+    elif tracker_type == "Bool":
+        column_to_grab = "bool_val"
+    else:
+        column_to_grab = 'string_val'
+
+    querey = "SELECT id, date, %s FROM tracker_transactions WHERE trackerid = %s" % (column_to_grab, trackerid,)
+    cursor.execute(querey)
+    transactions_dict = support_funcs.convert_tup_to_dict(cursor.fetchall())
+    list_transactions = []
+    for value in transactions_dict.values():
+        list_transactions.append(value)
+
+    return list_transactions

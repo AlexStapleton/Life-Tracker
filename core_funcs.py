@@ -1,17 +1,13 @@
 # Core functionality
 
 # Import standard packages
-import sqlite3
-from datetime import datetime
+
+# Import program packages
 import config
 import support_funcs
 import database_funcs
 import status_checks
 
-def added_datetime():
-    """Gets the current datatime to be added to transactions and when a new tracker is created"""
-    dt = datetime.now()
-    return dt
 
 def add_tracker_item():
     """ Creates a dictionary of values to pass to the sqlite function to update the master_tracker table """
@@ -35,32 +31,32 @@ def add_tracker_item():
 
     # Get the type of tracker and run a check to ensure it is a correct option
     print("Tracker Types: Num (n) | Bool (b) | String (s)")
-    type = input("Select the type of this tracker: ")
-    while type.lower() not in config.tracker_types:
-        type = input("Select the type of this tracker: ")
+    new_type = input("Select the type of this tracker: ")
+    while new_type.lower() not in config.tracker_types:
+        new_type = input("Select the type of this tracker: ")
 
     # Convert to standard three options
-    if type == 'n':
-        type = 'Num'
-    elif type == 'b':
-        type = 'Bool'
+    if new_type == 'n':
+        new_type = 'Num'
+    elif new_type == 'b':
+        new_type = 'Bool'
     else:
-        type = 'String'
+        new_type = 'String'
 
-    dt = added_datetime()
+    dt = support_funcs.added_datetime()
 
-    di = {"name":tracker_name,
-          "desc":tracker_description,
-          "type":type,
-          "dt":dt}
+    di = {"name": tracker_name,
+          "desc": tracker_description,
+          "type": new_type,
+          "dt": dt}
 
     print("Success, tracker created")
     return di
 
 
-def add_numerical_transaction():
+def add_numerical_transaction(trackerid):
     """Adds a transaction to the "tracker_transactions" database of numerical tracker type"""
-    tracker_id = input("Select Tracker: ")
+    # tracker_id = input("Select Tracker: ")
 
     # Get the user to input the value
     input_val = ""
@@ -71,13 +67,13 @@ def add_numerical_transaction():
     tracker_num_val = float(input_val)
 
     # Add datetime to when the transaction was added
-    dt = added_datetime()
+    dt = support_funcs.added_datetime()
 
     # Leave blank to ensure no errors
     tracker_bool_val = ""
     tracker_string_val = ""
 
-    di = {"tracker_id":tracker_id,
+    di = {"tracker_id":trackerid,
             "dt": dt,
             "tracker_num_val":tracker_num_val,
             "tracker_bool_val": tracker_bool_val,
@@ -85,9 +81,10 @@ def add_numerical_transaction():
             }
     return di
 
-def add_bool_transaction():
+
+def add_bool_transaction(trackerid):
     """Adds a transaction to the "tracker_transactions" database of bool tracker type"""
-    tracker_id = input("Select Tracker: ")
+    # tracker_id = input("Select Tracker: ")
 
     # Get the user to input the value
     input_val = input("True / False: ")
@@ -101,46 +98,53 @@ def add_bool_transaction():
     tracker_bool_val = input_val
 
     # Add datetime to when the transaction was added
-    dt = added_datetime()
+    dt = support_funcs.added_datetime()
 
     # Leave blank to ensure no errors
     tracker_num_val = ""
     tracker_string_val = ""
 
-    di = {"tracker_id":tracker_id,
-            "dt": dt,
-            "tracker_num_val":tracker_num_val,
-            "tracker_bool_val": tracker_bool_val,
-            "tracker_string_val": tracker_string_val
-            }
+    di = {"tracker_id": trackerid,
+          "dt": dt,
+          "tracker_num_val": tracker_num_val,
+          "tracker_bool_val": tracker_bool_val,
+          "tracker_string_val": tracker_string_val
+          }
     return di
 
-def add_string_transaction():
+
+def add_string_transaction(trackerid):
     """Adds a transaction to the "tracker_transactions" database of string tracker type"""
-    tracker_id = input("Select Tracker: ")
+    #tracker_id = input("Select Tracker: ")
 
     # Get the user to input the value
-    input_val = input("True / False: ")
-    if input_val in config.bool_true_possible_values:
-        input_val = 1
-    elif input_val in config.bool_false_possible_values:
-        input_val = 0
-    else:
-        print("Error")
-
-    tracker_bool_val = input_val
+    input_val = input("Text: ")
+    tracker_string_val = input_val
 
     # Add datetime to when the transaction was added
-    dt = added_datetime()
+    dt = support_funcs.added_datetime()
 
     # Leave blank to ensure no errors
     tracker_num_val = ""
-    tracker_string_val = ""
+    tracker_bool_val = ""
 
-    di = {"tracker_id":tracker_id,
+    di = {"tracker_id":trackerid,
             "dt": dt,
             "tracker_num_val":tracker_num_val,
             "tracker_bool_val": tracker_bool_val,
             "tracker_string_val": tracker_string_val
             }
     return di
+
+def add_transaction(trackerid):
+    """Used to select the type of add_tracker_"type" to the transaction_tracker table."""
+    # Get the type of the tracker
+    add_type = database_funcs.get_tracker_type(trackerid)
+    print(add_type)
+
+    if add_type == "Num":
+        return add_numerical_transaction(trackerid)
+    elif add_type == "Bool":
+        return add_bool_transaction(trackerid)
+    else:
+        return add_string_transaction(trackerid)

@@ -1,9 +1,19 @@
 # Functions that don't provide features or interactions with the database
 
+from datetime import datetime
+
 # Converts a tuple to a dictionary
 def convert_tup_to_dict(tup):
     dict1 = dict(tup)
     return dict1
+
+
+def added_datetime():
+    """Gets the current datatime to be added to transactions and when a new tracker is created"""
+    now = datetime.now()
+    dt = now
+    return dt
+
 
 # Checks for duplicates of a string
 def string_dup_check(str_val, str_list, type='lower'):

@@ -12,12 +12,14 @@ if status_checks.run_db_existence_check() == False:
 else:
     pass
 
-item = core_funcs.add_tracker_item()
+#item = core_funcs.add_tracker_item()
 
-database_funcs.add_master_tracker_table(item)
+#database_funcs.add_master_tracker_table(item)
 
 pprint.pprint(database_funcs.list_active_trackers())
 
-value = core_funcs.add_numerical_transaction()
+x = 7
+value = core_funcs.add_transaction(x)
+print(value)
 #value = core_funcs.add_bool_transaction()
 database_funcs.add_tracker_transactions_table(value)
