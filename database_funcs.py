@@ -57,8 +57,6 @@ def create_default_tables():
 
 
 def unique_id_gen(table):
-    """Grabs the largest id in the table (input into function) and adds 1 to get a
-    unique id"""
     """Grabs the largest id in the table (input into function)
     and adds 1 to get a unique id.
     If there is no value in the database, this function returns 1"""
