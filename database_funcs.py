@@ -195,11 +195,27 @@ def list_transactions_tracker(trackerid):
     else:
         column_to_grab = 'string_val'
 
-    querey = "SELECT id, date, %s FROM tracker_transactions WHERE trackerid = %s" % (column_to_grab, trackerid,)
-    cursor.execute(querey)
+    query = "SELECT id, date, %s FROM tracker_transactions WHERE trackerid = %s" % (column_to_grab, trackerid,)
+    cursor.execute(query)
     transactions_dict = support_funcs.convert_tup_to_dict(cursor.fetchall())
     list_transactions = []
     for value in transactions_dict.values():
         list_transactions.append(value)
 
     return list_transactions
+
+
+def remove_master_tracker(trackerid):
+    """Removes a tracker from the master_tracker table"""
+    # Initiate the connection
+    con = db_connection()
+    connection = con[0]
+    cursor = con[1]
+
+    # Create query string to delete
+    query = "DELETE FROM master_tracker WHERE id = %s" % (trackerid,)
+
+    cursor.execute(query)
+    connection.commit()
+    
+    print("%s was deleted" % (trackerid))
