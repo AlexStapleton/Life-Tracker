@@ -1,6 +1,7 @@
 # Functions that don't provide features or interactions with the database
 
 from datetime import datetime
+from pprint import pprint
 
 # Converts a tuple to a dictionary
 def convert_tup_to_dict(tup):
@@ -39,6 +40,3 @@ def string_dup_check(str_val, str_list, type='lower'):
         return True
     else:
         return False
-
-
-
