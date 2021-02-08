@@ -40,3 +40,24 @@ def string_dup_check(str_val, str_list, type='lower'):
         return True
     else:
         return False
+
+# Nicer way to print dictionaries, used for showing active trackers
+
+def id_print_dict(di):
+    """Takes a dictionary and returns the dictionary as printed, and returns a list of the key values."""
+
+    id_vals = []
+
+    for x in di:
+        id_vals.append(x)
+
+    for y in di:
+        print(y, "-", di[y])
+
+    return id_vals
+
+
+def main_menu_func_calls(name):
+    """Takes a name of a main action from config.main_menu_actions and converts it to a callable function"""
+    id_val = config.main_menu_actions.index(name)
+    return config.main_menu_functions(id_val)
